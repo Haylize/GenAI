@@ -1,0 +1,30 @@
+Titre : Otite
+
+Description :
+Infection de l’oreille, fréquente chez les enfants.
+
+Symptômes principaux :
+- Douleur à l’oreille
+- Fièvre
+
+Symptômes secondaires :
+- Irritabilité
+- Perte d’audition temporaire
+
+Durée :
+2 à 5 jours.
+
+Quand consulter :
+- Si douleur intense
+- Chez les jeunes enfants
+
+Traitement :
+- Antalgiques
+- Antibiotiques si nécessaire
+
+Mots-clés :
+oreille, douleur, infection, fièvre
+
+Attention : Ces informations sont fournies à titre informatif et ne remplacent pas un avis médical.
+
+---

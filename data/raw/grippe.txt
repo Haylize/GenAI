@@ -1,0 +1,36 @@
+Titre : Grippe (Influenza)
+
+Description :
+La grippe est une infection virale aiguë très contagieuse qui affecte le système respiratoire.
+
+Symptômes principaux :
+- Fièvre élevée (souvent > 38,5°C)
+- Fatigue intense
+- Douleurs musculaires (courbatures)
+- Maux de tête
+- Toux sèche
+
+Symptômes secondaires :
+- Frissons
+- Perte d’appétit
+- Mal de gorge
+
+Durée :
+Les symptômes durent généralement entre 5 et 10 jours.
+
+Quand consulter :
+- Si la fièvre persiste plus de 3 jours
+- Si difficultés respiratoires
+- Chez les personnes à risque (personnes âgées, maladies chroniques)
+
+Traitement :
+- Repos
+- Hydratation
+- Paracétamol pour la fièvre
+
+Mots-clés :
+grippe, influenza, fièvre, fatigue, courbatures, infection virale, toux, frissons, syndrome grippal
+
+Attention : Ces informations sont fournies à titre informatif et ne remplacent pas un avis médical.
+
+---
