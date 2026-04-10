@@ -17,16 +17,16 @@ def main():
         rag_chain = get_medical_rag_chain(retriever)
         
         print("\n" + "="*50)
-        print("🤖 MEDICAL ASSISTANT IS ONLINE")
+        print("MEDICAL ASSISTANT IS ONLINE")
         print("Ask your question (or type 'quit' to exit)")
         print("="*50 + "\n")
 
         while True:
-            user_input = input("👉 Your Question: ")
+            user_input = input("Your Question: ")
             
             # Handle exit commands
             if user_input.lower() in ["quit", "exit", "stop", "quitter"]:
-                print("Closing the assistant. Stay safe! 👋")
+                print("Closing the assistant. Stay safe!")
                 break
                 
             if not user_input.strip():
@@ -38,10 +38,10 @@ def main():
             answer = rag_chain.invoke(user_input)
             docs = retriever.invoke(user_input)
             
-            print("\n--- 🩺 Assistant's Response ---")
+            print("\n--- Assistant's Response ---")
             print(answer)
             
-            print("\n--- 📚 Referenced Sources ---")
+            print("\n--- Referenced Sources ---")
             if docs:
                 for doc in docs:
                     title = doc.metadata.get('disease_title', 'Unknown Disease')
@@ -52,7 +52,7 @@ def main():
             print("\n" + "-"*50 + "\n")
 
     except Exception as e:
-        print(f"❌ System Error: {e}")
+        print(f"System Error: {e}")
         print("Please verify that Ollama is running and the FAISS index exists.")
 
 if __name__ == "__main__":
