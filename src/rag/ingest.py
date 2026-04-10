@@ -1,4 +1,3 @@
-
 import os
 import re
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
@@ -6,15 +5,14 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
-
 # Paths — resolved relative to this file's location, works on any machine
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATA_FOLDER = os.path.join(BASE_DIR, "data", "raw")
 INDEX_PATH = os.path.join(BASE_DIR, "faiss_index")
 
-# Chunking parameters
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 50
+# Chunking parameters (Adjusted size for full medical records)
+CHUNK_SIZE = 2000
+CHUNK_OVERLAP = 200
 
 # Embedding model
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
@@ -30,6 +28,17 @@ def extract_title(content: str, filename: str) -> str:
     if match:
         return match.group(1).strip()
     return os.path.splitext(filename)[0].replace("-", " ").capitalize()
+
+
+def extract_keywords(content: str) -> list:
+    """
+    Attempts to extract the keywords from the file content.
+    Looks for a line "Mots-clés : <keywords>" in the text.
+    """
+    match = re.search(r"Mots-clés\s*:\s*(.+)", content, re.IGNORECASE)
+    if match:
+        return [kw.strip() for kw in match.group(1).split(",")]
+    return []
 
 
 def load_documents(data_folder: str) -> list:
@@ -57,12 +66,14 @@ def load_documents(data_folder: str) -> list:
         # Extract title from the full content of the loaded document
         full_content = " ".join([d.page_content for d in docs])
         title = extract_title(full_content, filename)
+        keywords = extract_keywords(full_content)
 
         # Attach metadata to each page/document
         for doc in docs:
             doc.metadata["source_file"] = filename
             doc.metadata["file_type"] = file_type
             doc.metadata["disease_title"] = title
+            doc.metadata["keywords"] = keywords
 
         documents.extend(docs)
 
@@ -106,6 +117,7 @@ def preview_metadata(chunks: list, n: int = 3):
         print(f"  source_file    : {chunk.metadata.get('source_file')}")
         print(f"  file_type      : {chunk.metadata.get('file_type')}")
         print(f"  disease_title  : {chunk.metadata.get('disease_title')}")
+        print(f"  keywords       : {chunk.metadata.get('keywords')}")
         print(f"  content (start): {chunk.page_content[:80]}...")
         print()
 
@@ -113,9 +125,12 @@ def preview_metadata(chunks: list, n: int = 3):
 if __name__ == "__main__":
     print("Starting ingestion pipeline\n")
 
-    documents = load_documents(DATA_FOLDER)
-    chunks = split_into_chunks(documents)
-    preview_metadata(chunks)
-    embed_and_save(chunks, INDEX_PATH)
-
-    print("\nIngestion complete.")
+    if not os.path.exists(DATA_FOLDER):
+        print(f"Error: Directory {DATA_FOLDER} not found. Please create it and add your files.")
+    else:
+        documents = load_documents(DATA_FOLDER)
+        if documents:
+            chunks = split_into_chunks(documents)
+            preview_metadata(chunks)
+            embed_and_save(chunks, INDEX_PATH)
+            print("\nIngestion complete.")
