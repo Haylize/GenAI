@@ -1,17 +1,31 @@
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 
 def format_docs(docs):
-    """Combines the page content of retrieved documents into a single context string."""
-    return "\n\n".join(doc.page_content for doc in docs)
+    """
+    Combine retrieved documents into a readable context string,
+    including source information for each chunk.
+    """
+    if not docs:
+        return "No relevant context found."
+
+    formatted = []
+    for i, doc in enumerate(docs, 1):
+        source = doc.metadata.get("disease_title") or doc.metadata.get("source_file", "Unknown source")
+        content = doc.page_content.strip()
+
+        formatted.append(
+            f"[Source {i}: {source}]\n{content}"
+        )
+
+    return "\n\n".join(formatted)
 
 
 def get_medical_rag_chain(retriever):
     """
-    Configures the local LLM and builds the RAG chain with conversation memory.
+    Configure the local LLM and build the RAG chain with conversation memory.
 
     The chain expects a dict with:
         - "question": the current user message (str)
@@ -23,19 +37,39 @@ def get_medical_rag_chain(retriever):
     Returns:
         A runnable RAG chain.
     """
-    llm = ChatOllama(model="mistral", temperature=0)
+
+    llm = ChatOllama(
+        model="mistral",
+        temperature=0
+    )
 
     prompt = ChatPromptTemplate.from_messages([
         (
             "system",
-            """You are a professional Medical Assistant.
-Use the following pieces of retrieved context to answer the user's question.
-If the answer is not contained within the context, clearly state that you do not know.
-Always advise the user to consult a doctor for a formal diagnosis.
+            """You are a professional medical assistant.
 
-STRICT RULE: Always respond in the same language as the user's question.
+Your role is to answer ONLY using the retrieved context provided below.
 
-Context:
+Rules:
+- Use only the information explicitly present in the retrieved context.
+- If the answer is not contained in the context, clearly say that you do not know based on the available documents.
+- Do not invent symptoms, treatments, causes, or recommendations.
+- Always respond in the same language as the user's question.
+- Keep the answer clear, concise, and medically cautious.
+- Always advise the user to consult a doctor or healthcare professional for a formal diagnosis.
+- When relevant, mention the source(s) used.
+
+STRICT LANGUAGE RULE:
+- If the user writes in French, you MUST answer in French.
+- If the user writes in English, you MUST answer in English.
+- Never switch language.
+
+Preferred answer structure:
+1. Main answer
+2. Additional useful details
+3. Medical caution
+
+Retrieved context:
 {context}"""
         ),
         MessagesPlaceholder(variable_name="history"),
@@ -46,7 +80,7 @@ Context:
         {
             "context": (lambda x: x["question"]) | retriever | format_docs,
             "history": lambda x: x["history"],
-            "question": lambda x: x["question"],
+            "question": lambda x: f"Réponds STRICTEMENT en français.\nQuestion: {x['question']}",
         }
         | prompt
         | llm
