@@ -12,7 +12,6 @@ Setting max_exchanges=5 means the last 5 pairs are kept (10 messages total).
 from langchain_core.messages import HumanMessage, AIMessage
 
 
-# Number of exchanges (user + assistant pairs) to keep in memory
 DEFAULT_MAX_EXCHANGES = 5
 
 
@@ -27,10 +26,15 @@ class ConversationMemory:
         self.max_exchanges = max_exchanges
         self._history: list[tuple[str, str]] = []
 
+    def _trim_history(self):
+        """Keep only the last max_exchanges pairs."""
+        max_messages = self.max_exchanges * 2
+        if len(self._history) > max_messages:
+            self._history = self._history[-max_messages:]
+
     def add_exchange(self, user_message: str, assistant_message: str):
         """
         Adds a user/assistant exchange to the history.
-        If the history exceeds max_exchanges, the oldest exchange is removed.
 
         Args:
             user_message: The message sent by the user.
@@ -38,19 +42,21 @@ class ConversationMemory:
         """
         self._history.append(("user", user_message))
         self._history.append(("assistant", assistant_message))
+        self._trim_history()
 
-        # Each exchange = 2 messages, so we keep max_exchanges * 2 messages
-        max_messages = self.max_exchanges * 2
-        if len(self._history) > max_messages:
-            self._history = self._history[-max_messages:]
+    def add_user_message(self, user_message: str):
+        """Adds only a user message to memory."""
+        self._history.append(("user", user_message))
+        self._trim_history()
+
+    def add_ai_message(self, assistant_message: str):
+        """Adds only an assistant message to memory."""
+        self._history.append(("assistant", assistant_message))
+        self._trim_history()
 
     def get_langchain_messages(self) -> list:
         """
         Returns the history formatted as LangChain message objects.
-        This can be passed directly into a ChatPromptTemplate or LLM chain.
-
-        Returns:
-            A list of HumanMessage and AIMessage objects.
         """
         messages = []
         for role, content in self._history:
@@ -59,6 +65,13 @@ class ConversationMemory:
             else:
                 messages.append(AIMessage(content=content))
         return messages
+
+    def get_history(self) -> list:
+        """
+        Alias for compatibility with other parts of the project.
+        Returns LangChain-formatted messages.
+        """
+        return self.get_langchain_messages()
 
     def clear(self):
         """Clears the entire conversation history."""
@@ -70,6 +83,7 @@ class ConversationMemory:
         if not self._history:
             print("No conversation history yet.")
             return
+
         print(f"\nConversation history ({len(self._history) // 2} exchange(s)):")
         print("-" * 50)
         for role, content in self._history:
