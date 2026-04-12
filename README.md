@@ -41,3 +41,18 @@ The project is organized into modular components to ensure maintainability:
 ├── Dockerfile             # Containerization instructions
 └── requirements.txt       # Project dependencies
 ```
+
+## Getting Started
+Prerequisites
+- Python 3.9 or higher
+
+- OpenAI API Key (or local LLM via Ollama)
+
+## Contributors
+- Édouard LACROIX
+- Élodie NGIRABANZI
+- Élise PRIGENT
+- Imane MAIGA
+
+## Acknowledgements
+This project was developed as part of a Data Analytics / GenAI Project.
