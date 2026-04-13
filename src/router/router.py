@@ -45,8 +45,9 @@ class AssistantRouter:
         ]
 
         self.web_keywords = [
-            "recherche web", "cherche sur le web", "cherche en ligne",
-            "internet", "web", "actualité", "actualités", "news"
+            "recherche", "chercher", "cherche", "internet", "web",
+            "actualité", "actualités", "news", "infos sur",
+            "information sur", "informations sur"
         ]
 
     def is_calculation(self, question: str) -> bool:
@@ -80,9 +81,14 @@ class AssistantRouter:
 
         patterns = [
             r"météo à ([a-zA-ZÀ-ÿ\- ]+)",
+            r"météo de ([a-zA-ZÀ-ÿ\- ]+)",
+            r"meteo de ([a-zA-ZÀ-ÿ\- ]+)",
             r"meteo a ([a-zA-ZÀ-ÿ\- ]+)",
             r"temps à ([a-zA-ZÀ-ÿ\- ]+)",
+            r"temps a ([a-zA-ZÀ-ÿ\- ]+)",
             r"temps de ([a-zA-ZÀ-ÿ\- ]+)",
+            r"température à ([a-zA-ZÀ-ÿ\- ]+)",
+            r"temperature a ([a-zA-ZÀ-ÿ\- ]+)",
         ]
 
         for pattern in patterns:
