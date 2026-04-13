@@ -80,9 +80,14 @@ class AssistantRouter:
 
         patterns = [
             r"météo à ([a-zA-ZÀ-ÿ\- ]+)",
+            r"météo de ([a-zA-ZÀ-ÿ\- ]+)",
+            r"meteo de ([a-zA-ZÀ-ÿ\- ]+)",
             r"meteo a ([a-zA-ZÀ-ÿ\- ]+)",
             r"temps à ([a-zA-ZÀ-ÿ\- ]+)",
+            r"temps a ([a-zA-ZÀ-ÿ\- ]+)",
             r"temps de ([a-zA-ZÀ-ÿ\- ]+)",
+            r"température à ([a-zA-ZÀ-ÿ\- ]+)",
+            r"temperature a ([a-zA-ZÀ-ÿ\- ]+)",
         ]
 
         for pattern in patterns:
