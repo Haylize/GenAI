@@ -45,8 +45,9 @@ class AssistantRouter:
         ]
 
         self.web_keywords = [
-            "recherche web", "cherche sur le web", "cherche en ligne",
-            "internet", "web", "actualité", "actualités", "news"
+            "recherche", "chercher", "cherche", "internet", "web",
+            "actualité", "actualités", "news", "infos sur",
+            "information sur", "informations sur"
         ]
 
     def is_calculation(self, question: str) -> bool:
