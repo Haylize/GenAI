@@ -1,0 +1,30 @@
+Titre : Intoxication alimentaire
+
+Description :
+Trouble digestif causé par des aliments contaminés.
+
+Symptômes principaux :
+- Vomissements
+- Diarrhée
+
+Symptômes secondaires :
+- Crampes abdominales
+- Fièvre
+
+Durée :
+1 à 3 jours.
+
+Quand consulter :
+- Si symptômes sévères
+- Si déshydratation
+
+Traitement :
+- Hydratation
+- Repos
+
+Mots-clés :
+aliment, intoxication, vomissement, diarrhée
+
+Attention : Ces informations sont fournies à titre informatif et ne remplacent pas un avis médical.
+
+---

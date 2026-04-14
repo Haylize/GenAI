@@ -11,3 +11,4 @@ faiss_index/
 .streamlit/
 .vscode/
 .idea/
+genai-env/

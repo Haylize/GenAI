@@ -1,0 +1,31 @@
+Titre : Allergie saisonnière
+
+Description :
+Réaction du système immunitaire à des allergènes comme le pollen.
+
+Symptômes principaux :
+- Éternuements
+- Nez qui coule
+- Démangeaisons des yeux
+
+Symptômes secondaires :
+- Fatigue
+- Toux légère
+
+Durée :
+Variable selon l’exposition.
+
+Quand consulter :
+- Si symptômes sévères
+- Si gêne importante au quotidien
+
+Traitement :
+- Antihistaminiques
+- Éviter les allergènes
+
+Mots-clés :
+allergie, pollen, éternuement, yeux
+
+Attention : Ces informations sont fournies à titre informatif et ne remplacent pas un avis médical.
+
+---
