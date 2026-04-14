@@ -2,7 +2,6 @@ from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 
-
 def format_docs(docs):
     """
     Combine retrieved documents into a readable context string,
@@ -26,21 +25,14 @@ def format_docs(docs):
 def get_medical_rag_chain(retriever):
     """
     Configure the local LLM and build the RAG chain with conversation memory.
-
-    The chain expects a dict with:
-        - "question": the current user message (str)
-        - "history": the conversation history (list of LangChain messages)
-
-    Args:
-        retriever: A LangChain retriever object (from vectorstore.py).
-
-    Returns:
-        A runnable RAG chain.
+    Optimized with Llama 3.2 3B for speed and precision.
     """
 
+    # Utilisation de Llama 3.2 3B : beaucoup plus léger et rapide que Mistral 7B
     llm = ChatOllama(
-        model="mistral",
-        temperature=0
+        model="llama3.2:3b",
+        temperature=0,
+        num_predict=300, # Limite la longueur pour accélérer la génération
     )
 
     prompt = ChatPromptTemplate.from_messages([
@@ -52,22 +44,15 @@ Your role is to answer ONLY using the retrieved context provided below.
 
 Rules:
 - Use only the information explicitly present in the retrieved context.
-- If the answer is not contained in the context, clearly say that you do not know based on the available documents.
-- Do not invent symptoms, treatments, causes, or recommendations.
+- If the answer is not contained in the context, clearly say that you do not know.
+- Do not invent symptoms, treatments, or recommendations.
 - Always respond in the same language as the user's question.
 - Keep the answer clear, concise, and medically cautious.
-- Always advise the user to consult a doctor or healthcare professional for a formal diagnosis.
-- When relevant, mention the source(s) used.
+- Always advise the user to consult a healthcare professional.
 
 STRICT LANGUAGE RULE:
 - If the user writes in French, you MUST answer in French.
 - If the user writes in English, you MUST answer in English.
-- Never switch language.
-
-Preferred answer structure:
-1. Main answer
-2. Additional useful details
-3. Medical caution
 
 Retrieved context:
 {context}"""
