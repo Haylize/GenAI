@@ -90,12 +90,11 @@ GENAI/
 ## Usage
 
 - Run the assistant: python src/rag/retrieve.py
-- Commands available:
 
-Ask any question:
-- Symptoms of flu?
-- Weather in Paris?
-- Search latest AI news
+- Ask any question:
+  - Symptoms of flu?
+  - Weather in Paris?
+  - Search latest AI news
 
 ## How It Works
 
