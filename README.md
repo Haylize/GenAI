@@ -1,58 +1,135 @@
-# GenAI: End-to-End Retrieval-Augmented Generation (RAG) System
+# Hybrid AI Assistant (RAG + Tools)
 
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-[![LangChain](https://img.shields.io/badge/Framework-LangChain-green.svg)](https://python.langchain.com/)
-[![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](https://www.docker.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## Overview
 
-## Project Overview
-This repository hosts a production-grade **End-to-End GenAI Pipeline**. The project focuses on building a scalable RAG (Retrieval-Augmented Generation) system that allows users to interact with private datasets using Large Language Models (LLMs).
+This project is a **hybrid AI assistant** combining:
 
-Unlike simple notebooks, this project implements a modular architecture including automated data ingestion, vector indexing, and a deployment-ready API/UI.
+- **RAG (Retrieval-Augmented Generation)** for domain-specific knowledge (e.g. medical data)
+- **LLM (Mistral via Ollama)** for natural language generation
+- **External tools** (weather, web search, calculator)
+- **Conversation memory** for contextual interactions
 
-## Key Features
-* **Modular Data Pipeline:** Automated ingestion and cleaning of unstructured data (PDFs, Markdown, Docx).
-* **Advanced RAG Strategy:** Implementation of semantic search using Vector Databases (ChromaDB/Pinecone).
-* **Context-Aware Chat:** Integrated memory for multi-turn conversations.
-* **Production Ready:** Logging, exception handling, and containerization using Docker.
-* **User Interface:** Interactive dashboard built with Streamlit for real-time testing.
+The assistant is able to:
+- Answer questions using a **local knowledge base (FAISS)**
+- Perform **real-time actions via tools**
+- Maintain a **short-term conversation memory**
+
+---
 
 ## Project Structure
-The project is organized into modular components to ensure maintainability:
 
 ```
-.
-├── .github/workflows      # CI/CD pipelines (GitHub Actions)
-├── assets/                # Architecture diagrams and UI screenshots
-├── configs/               # YAML files for model parameters & paths
-├── data/                  # Local storage for raw and processed documents
-├── notebook/              # Research and experimentation (Jupyter)
-├── src/                   # Core Source Code
-│   ├── components/        # Ingestion, Transformation, Embedding, Generation
-│   ├── pipeline/          # Training and Prediction (Inference) pipelines
-│   ├── constants/         # Fixed variables and file paths
-│   ├── entity/            # Data classes for configuration
-│   ├── logger/            # Custom logging module
-│   └── exception/         # Custom exception handling
-├── static/                # CSS/JS for the UI
-├── templates/             # HTML templates (if using Flask/FastAPI)
-├── app.py                 # Main application entry point (Streamlit/FastAPI)
-├── setup.py               # Package installation script
-├── Dockerfile             # Containerization instructions
-└── requirements.txt       # Project dependencies
+GENAI/
+│
+├── data/
+│ ├── raw/ # Raw data (documents, PDFs, etc.)
+│ ├── processed/ # Cleaned / chunked data
+│──faiss_index/ # Vector database (embeddings, not pushed)
+│
+├── src/
+│ ├── agents/tools/
+│ │ ├── calculator.py
+│ │ ├── weather.py
+│ │ └── web_search.py
+│ │
+│ ├── memory/
+│ │ └── memory.py
+│ │
+│ ├── rag/
+│ │ ├── ingest.py # Data ingestion & embedding
+│ │ ├── vectorstore.py # FAISS loading
+│ │ ├── qa_chain.py # RAG pipeline
+│ │ └── retrieve.py # Interactive assistant
+│ │
+│ ├── router/
+│ │ └── router.py # Routing logic (RAG vs tools)
+│ │
+│ └── app.py # Main entry point
+│
+├── .env # API keys (NOT pushed)
+├── requirements.txt
+└── README.md
 ```
 
-## Getting Started
-Prerequisites
-- Python 3.9 or higher
+## Features
 
-- OpenAI API Key (or local LLM via Ollama)
+### RAG System
+- Uses **FAISS** for semantic search
+- Retrieves relevant documents before answering
+- Improves factual accuracy
 
-## Contributors
-- Édouard LACROIX
-- Élodie NGIRABANZI
-- Élise PRIGENT
-- Imane MAIGA
+### Tools Integration
+- Weather API
+- Web search
+- Calculator
 
-## Acknowledgements
-This project was developed as part of a Data Analytics / GenAI Project.
+### Smart Routing
+- Automatically decides:
+  - Use RAG (knowledge base)
+  - Use a tool (external API)
+  - Use LLM directly
+
+### Memory
+- Stores last interactions
+- Enables contextual conversations
+
+## Installation
+
+- Clone the repository
+- Create virtual environment
+- Install dependencies
+- Setup environment variables
+- Create a .env file at the root:
+    - OPENWEATHER_API_KEY=your_key_here
+    - SERPAPI_KEY=your_key_here
+- Install Ollama
+    - Download from: https://ollama.com
+- Then install Mistral:
+    - ollama pull mistral
+
+## Usage
+
+- Run the assistant: python src/rag/retrieve.py
+- Commands available:
+
+Ask any question:
+- Symptoms of flu?
+- Weather in Paris?
+- Search latest AI news
+
+## How It Works
+
+1 : User asks a question  
+2 : Router decides:
+  - Tool → execute API
+  - RAG → retrieve documents
+  - LLM → direct answer  
+3 : Context is sent to Mistral  
+4 : Response is generated  
+5 : Memory is updated  
+
+## Tech Stack
+
+- Python
+- FAISS (vector DB)
+- Ollama (LLM local)
+- Mistral model
+- LangChain (optional depending on your impl)
+- dotenv
+
+## Known Limitations
+
+- Requires local model (Ollama running)
+- API keys must be configured manually
+- RAG quality depends on data quality
+
+## Next Improvements
+
+- Improve routing logic (LLM-based router)
+- Add more tools (finance, news, etc.)
+- Deploy on cloud
+- Add logging / monitoring
+
+## Security
+- API keys stored in .env
+- .env excluded via .gitignore
