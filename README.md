@@ -1,121 +1,141 @@
-# Hybrid AI Assistant (RAG + Tools)
+# 🩺 Hybrid AI Assistant (RAG + Tools)
 
-## Overview
+## 📖 Overview
 
 This project is a **hybrid AI assistant** combining:
 
 - **RAG (Retrieval-Augmented Generation)** for domain-specific knowledge (e.g. medical data)
-- **LLM (Mistral via Ollama)** for natural language generation
-- **External tools** (weather, web search, calculator)
+- **Multi-Model LLM Architecture (Ollama)** for fast routing and natural language generation
+- **External tools** (Weather, Web Search, Calculator)
 - **Conversation memory** for contextual interactions
+- **Interactive UI** using Streamlit
 
 The assistant is able to:
 - Answer questions using a **local knowledge base (FAISS)**
 - Perform **real-time actions via tools**
 - Maintain a **short-term conversation memory**
+- Provide a seamless user experience through a web interface
 
 ---
 
-## Project Structure
 
-```
+## 🏗️ Project Structure
+
+```text
 GENAI/
 │
 ├── data/
-│ ├── raw/ # Raw data (documents, PDFs, etc.)
-│ ├── processed/ # Cleaned / chunked data
-│──faiss_index/ # Vector database (embeddings, not pushed)
+│   ├── raw/           # Raw data (documents, PDFs, etc.)
+│   └── processed/     # Cleaned / chunked data
+├── faiss_index/       # Vector database (embeddings, not pushed)
 │
 ├── src/
-│ ├── agents/tools/
-│ │ ├── calculator.py
-│ │ ├── weather.py
-│ │ └── web_search.py
-│ │
-│ ├── memory/
-│ │ └── memory.py
-│ │
-│ ├── rag/
-│ │ ├── ingest.py # Data ingestion & embedding
-│ │ ├── vectorstore.py # FAISS loading
-│ │ ├── qa_chain.py # RAG pipeline
-│ │ └── retrieve.py # Interactive assistant
-│ │
-│ ├── router/
-│ │ └── router.py # Routing logic (RAG vs tools)
-│ │
-│ └── app.py # Main entry point
+│   ├── agents/tools/
+│   │   ├── calculator.py
+│   │   ├── weather.py
+│   │   └── web_search.py
+│   │
+│   ├── memory/
+│   │   └── memory.py
+│   │
+│   ├── rag/
+│   │   ├── ingest.py        # Data ingestion & embedding
+│   │   ├── vectorstore.py   # FAISS loading
+│   │   ├── qa_chain.py      # RAG pipeline
+│   │   └── retrieve.py      # Legacy terminal assistant
+│   │
+│   ├── router/
+│   │   └── router.py        # Intelligent routing logic (RAG vs tools)
+│   │
+│   └── app.py               # Main UI entry point (Streamlit)
 │
-├── .env # API keys (NOT pushed)
-├── requirements.txt
+├── .env               # API keys (NOT pushed)
+├── requirements.txt   # Python dependencies
 └── README.md
 ```
 
-## Features
+## ✨ Features
 
 ### RAG System
-- Uses **FAISS** for semantic search
-- Retrieves relevant documents before answering
-- Improves factual accuracy
+- Uses **FAISS** for semantic search.
+- Retrieves relevant documents before answering to improve factual accuracy.
 
 ### Tools Integration
-- Weather API
-- Web search
-- Calculator
+- **Weather API:** Real-time weather data (OpenWeatherMap).
+- **Web Search:** Live internet search for out-of-context queries (Tavily).
+- **Calculator:** Python-based exact math calculations.
 
 ### Smart Routing
-- Automatically decides:
-  - Use RAG (knowledge base)
-  - Use a tool (external API)
-  - Use LLM directly
+- Automatically decides the best execution path:
+  - Use **RAG** (Medical knowledge base)
+  - Use a **Tool** (Weather, Calculator, Search)
+  - Use **LLM directly** (Normal conversation)
 
 ### Memory
-- Stores last interactions
-- Enables contextual conversations
+- Stores the last 5 interactions to enable contextual and natural conversations.
 
-## Installation
+---
 
-- Clone the repository
-- Create virtual environment
-- Install dependencies
-- Setup environment variables
-- Create a .env file at the root:
-    - OPENWEATHER_API_KEY=your_key_here
-    - SERPAPI_KEY=your_key_here
-- Install Ollama
-    - Download from: https://ollama.com
-- Then install Mistral:
-    - ollama pull mistral
+## 📦 Installation & Dependencies
 
-## Usage
+**1. Clone the repository and set up the environment:**
+```bash
+git clone <repository_url>
+cd GENAI
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-- Run the assistant: python src/rag/retrieve.py
-- Commands available:
+**2. Install Python dependencies:**
+```bash
+pip install -r requirements.txt
+```
+**3. Setup environment variables:** Create a `.env` file at the root of the project with your API keys:
 
-Ask any question:
-- Symptoms of flu?
-- Weather in Paris?
-- Search latest AI news
+```env
+OPENWEATHER_API_KEY=your_key_here
+TAVILY_API_KEY=your_key_here
+```
+**4. Install Local AI Models (Ollama):** Download and install Ollama, then pull the required models:
 
-## How It Works
+```bash
+# Lightweight model for ultra-fast routing
+ollama pull llama3.2:1b
 
-1 : User asks a question  
-2 : Router decides:
-  - Tool → execute API
-  - RAG → retrieve documents
-  - LLM → direct answer  
-3 : Context is sent to Mistral  
-4 : Response is generated  
-5 : Memory is updated  
+# Primary models for complex RAG and reasoning
+ollama pull llama3.2:3b
+ollama pull mistral
+```
+## 🚀 Usage (Execution Instructions)
 
-## Tech Stack
+Run the interactive web interface using Streamlit:
 
-- Python
-- FAISS (vector DB)
-- Ollama (LLM local)
-- Mistral model
-- LangChain (optional depending on your impl)
-- dotenv
+```bash
+streamlit run src/app.py
+```
+Example Commands to test the routing system:
+
+- "Quels sont les symptômes de la grippe ?" ➔ **Triggers the RAG System**
+- "Quelle est la météo à Paris ?" ➔ **Triggers the Weather Tool**
+- "Combien font 245 multiplié par 3 ?" ➔ **Triggers the Calculator Tool**
+- "Cherche sur le web les dernières actus IA" ➔ **Triggers the Web Search Tool**
+- "Bonjour, comment ça va ?" ➔ **Triggers Standard Chat**
+
+## ⚙️ How It Works (Architecture)
+1. User Input: The user asks a question via the Streamlit UI.
+2. Intelligent Router: A lightweight model evaluates the intent and selects the optimal path.
+3. Execution: - Tool ➔ API is called.
+RAG ➔ FAISS index is queried.
+Chat ➔ Direct LLM response.
+4. Contextualization: History is injected into the prompt.
+5. Generation: The final response is generated by the LLM and displayed in the UI along with its sources.
+
+## 🛠️ Tech Stack
+- UI: Streamlit
+- Language Models: Ollama (Llama 3.2, Mistral)
+- Vector Database: FAISS
+- Search/Tools: Tavily API, OpenWeather API
+- Environment: Python, python-dotenv
 
 ## Known Limitations
 
@@ -130,6 +150,6 @@ Ask any question:
 - Deploy on cloud
 - Add logging / monitoring
 
-## Security
-- API keys stored in .env
-- .env excluded via .gitignore
+## 🔒 Security
+- API keys are strictly loaded from the .env file.
+- The .env file and local vector databases (faiss_index/) are excluded from version control via .gitignore to prevent data leaks.
