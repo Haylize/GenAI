@@ -7,7 +7,7 @@ load_dotenv()
 
 API_KEY = os.getenv("TAVILY_API_KEY")
 
-llm = ChatOllama(model="mistral", temperature=0)
+llm = ChatOllama(model="llama3.2:1b", temperature=0)
 
 def web_search_tool(query: str) -> str:
     if not API_KEY:
